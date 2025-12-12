@@ -40,9 +40,45 @@ https://doi.org/10.1007/s40747-022-00693-x
 
 ---
 
+### System architecture
+Below, the system architecture is shown.
+<p align="center">
+  <img src="architecture-hate-speech-feature-evaluation.png" width="80%">
+</p>
+
+The implemented modular system integrates **linguistic features**, **Transformer-based models**, and several **feature integration strategies** (knowledge integration and ensemble learning). The overall architecture of the pipeline is illustrated in the figure above.  
+Its workflow can be summarized as follows:
+
+1. **DatasetSelector**  
+   Selects one of the evaluated datasets and acts as the system’s input module.
+
+2. **TextCleaner**  
+   Performs text cleaning and preprocessing to normalize and standardize the input data.
+
+3. **DatasetSplitter**  
+   Divides the corpus into training, validation, and test splits.  
+   The training split is also used to fit the processes handled by:
+   - **FeatureGenerator** → extracts linguistic or embedding-based features.  
+   - **FeatureSelector** → filters or ranks the most informative features.
+
+4. **ModelResolver**  
+   Allows selecting the evaluation strategy. It can choose between:
+   - **Deep Learning** (independent feature sets),
+   - **Knowledge Integration** (combining multiple feature sets into a single architecture),
+   - **Ensemble Learning** (combining predictions of the best models per feature set).
+
+5. **HyperParameterSelector**  
+   Automatically explores different architectures and hyperparameters to determine the most suitable configuration for each dataset and feature set.
+
+6. **Best Model + Classification Report**  
+   The pipeline selects the optimal model and produces a complete evaluation report.
+
+Each module is designed to operate independently, enabling flexible experimentation with different datasets, features, and modeling strategies.
+
+
 
 ### Feature Sets Evaluated
-#### **1. UMUTextStats (Linguistic Features)**  
+#### **1. UMUTextStats (Linguistic Features)** [Link](https://aclanthology.org/2022.lrec-1.649.pdf)
 A suite of **lexical, morphosyntactic, stylistic and readability metrics** extracted with UMUTextStats tool.
 
 Includes features such as:
@@ -117,7 +153,7 @@ HatEval 2019 (https://aclanthology.org/S19-2007/)
 
 
 ### Evaluation
-Next, we provide accuracy (Acc), F1-score of the hate-speech class (F1_HS), and Macro F1-score (M_F1) for each dataset using feature-combination strategies and compared with external approaches. Please, check the original manuscript for the references.
+Next, we provide accuracy (Acc), F1-score of the hate-speech class (F1_HS), and Macro F1-score (M_F1) for each dataset using feature-combination strategies and compared with external approaches. Please, check the original manuscript for the references. We also provide the information gain of the linguistic categories. 
 
 #### Spanish MisoCorpus 2020
 
@@ -126,6 +162,10 @@ Next, we provide accuracy (Acc), F1-score of the hate-speech class (F1_HS), and 
 | SVM, LF, AWE (external)                                         | 85.2    | -       | -      |
 | **Knowledge integration (LF-BF)**                               | **90.4** | **88.9** | **90.2** |
 | Ensemble Learning (LF-BF, logistic regression)                  | 89.7    | 88.2    | 89.6   |
+
+<p align="center">
+  <img src="information-gain-misocorpus.png" width="70%">
+</p>
 
 #### AMI 2018
 
@@ -136,6 +176,10 @@ Next, we provide accuracy (Acc), F1-score of the hate-speech class (F1_HS), and 
 | **Knowledge integration (LF-BF)**                               | **83.3** | **83.4** | **83.3** |
 | Ensemble Learning (LF-BF, logistic regression)                  | 82.5    | 82.8    | 82.5   |
 
+<p align="center">
+  <img src="information-gain-ami.png" width="70%">
+</p>
+
 #### HaterNET
 
 | Approach                                                        | Acc     | F1_HS   | M_F1   |
@@ -145,6 +189,9 @@ Next, we provide accuracy (Acc), F1-score of the hate-speech class (F1_HS), and 
 | **Knowledge integration (LF-BF)**                               | **84.3** | 65.9    | 77.9   |
 | Ensemble Learning (LF-BF, logistic regression)                  | 82.9    | **68.3** | **78.3** |
 
+<p align="center">
+  <img src="information-gain-haternet.png" width="70%">
+</p>
 
 #### HatEval 2019 (Spanish)
 
@@ -156,6 +203,9 @@ Next, we provide accuracy (Acc), F1-score of the hate-speech class (F1_HS), and 
 | **Knowledge integration (LF-BF)**                               | **77.1** | 76.8    | **76.8** |
 | Ensemble Learning (LF-BF, logistic regression)                  | 76.5    | 74.6    | **76.5** |
 
+<p align="center">
+  <img src="information-gain-hateval.png" width="70%">
+</p>
 
 
 ### Citation
